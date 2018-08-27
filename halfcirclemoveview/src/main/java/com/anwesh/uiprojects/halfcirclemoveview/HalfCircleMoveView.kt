@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.halfcirclemoveview
  * Created by anweshmishra on 27/08/18.
  */
 
+import android.app.Activity
 import android.view.View
 import android.view.MotionEvent
 import android.content.Context
@@ -185,6 +186,14 @@ class HalfCircleMoveView (ctx : Context) : View(ctx) {
             hcm.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : HalfCircleMoveView {
+            val view : HalfCircleMoveView = HalfCircleMoveView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
