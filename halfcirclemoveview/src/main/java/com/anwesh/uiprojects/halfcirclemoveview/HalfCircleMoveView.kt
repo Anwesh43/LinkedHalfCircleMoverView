@@ -15,7 +15,7 @@ import android.graphics.RectF
 
 val nodes : Int = 5
 
-fun Canvas.drawHCNode(i : Int, scale : Float, paint : Paint) {
+fun Canvas.drawHCNode(i : Int, scale : Float, paint : Paint, drawAlpha : Boolean) {
     val sc1 : Float = Math.min(0.5f, scale) * 2
     val sc2 : Float = Math.min(0.5f, Math.max(0f, scale - 0.5f)) * 2
     val w : Float = width.toFloat()
@@ -27,6 +27,11 @@ fun Canvas.drawHCNode(i : Int, scale : Float, paint : Paint) {
     paint.strokeWidth = Math.min(w, h) / 50
     paint.strokeCap = Paint.Cap.ROUND
     paint.color = Color.parseColor("#1976D2")
+    if (drawAlpha) {
+        paint.alpha = 255
+    } else {
+        paint.alpha = 100
+    }
     save()
     translate(w / 2, gap / 3 + gap / 2 + gap * i + gap * sc1)
     rotate(180f * factor * sc2)
@@ -118,9 +123,9 @@ class HalfCircleMoveView (ctx : Context) : View(ctx) {
             }
         }
 
-        fun draw(canvas : Canvas, paint : Paint) {
-            canvas.drawHCNode(i, state.scale, paint)
-            next?.draw(canvas, paint)
+        fun draw(canvas : Canvas, paint : Paint, i : Int) {
+            canvas.drawHCNode(this.i, state.scale, paint, i == this.i)
+            next?.draw(canvas, paint, i)
         }
 
         fun update(cb : (Int, Float) -> Unit) {
@@ -151,7 +156,7 @@ class HalfCircleMoveView (ctx : Context) : View(ctx) {
         private var dir : Int = 1
 
         fun draw(canvas : Canvas, paint : Paint) {
-            curr.draw(canvas, paint)
+            curr.draw(canvas, paint, curr.i)
         }
 
         fun update(cb : (Int, Float) -> Unit) {
