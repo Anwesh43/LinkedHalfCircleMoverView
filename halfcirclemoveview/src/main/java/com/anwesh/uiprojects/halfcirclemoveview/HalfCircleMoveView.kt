@@ -52,7 +52,7 @@ class HalfCircleMoveView (ctx : Context) : View(ctx) {
 
     data class State(var scale : Float = 0f, var prevScale : Float = 0f, var dir : Float = 0f) {
 
-        fun update(cb : (Float) -> Int) {
+        fun update(cb : (Float) -> Unit) {
             scale += 0.05f * dir
             if (Math.abs(scale - prevScale) > 1) {
                 scale = prevScale + dir
@@ -96,6 +96,49 @@ class HalfCircleMoveView (ctx : Context) : View(ctx) {
             if (animated) {
                 animated = false
             }
+        }
+    }
+
+    data class HCNode(var i : Int, val state : State = State()) {
+
+        private var next : HCNode? = null
+        private var prev : HCNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < nodes - 1) {
+                next = HCNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            canvas.drawHCNode(i, state.scale, paint)
+        }
+
+        fun update(cb : (Int, Float) -> Unit) {
+            state.update {
+                cb(i, it)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            state.startUpdating(cb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : HCNode {
+            var curr : HCNode ?= this.prev
+            if (dir == 1) {
+                curr = this.next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
         }
     }
 }
