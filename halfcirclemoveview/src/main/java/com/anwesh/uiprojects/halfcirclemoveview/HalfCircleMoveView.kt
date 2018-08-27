@@ -163,4 +163,26 @@ class HalfCircleMoveView (ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : HalfCircleMoveView) {
+
+        private val hcm : HalfCircleMover = HalfCircleMover(0)
+
+        private val animator : Animator = Animator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#BDBDBD"))
+            animator.animate {
+                hcm.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            hcm.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
