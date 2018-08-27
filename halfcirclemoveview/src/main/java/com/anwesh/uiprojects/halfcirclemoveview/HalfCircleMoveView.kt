@@ -28,7 +28,7 @@ fun Canvas.drawHCNode(i : Int, scale : Float, paint : Paint) {
     paint.strokeCap = Paint.Cap.ROUND
     paint.color = Color.parseColor("#1976D2")
     save()
-    translate(w / 2, gap / 3 + gap / 2 + gap * i * sc1)
+    translate(w / 2, gap / 3 + gap / 2 + gap * i + gap * sc1)
     rotate(180f * factor * sc2)
     drawArc(RectF(-r, -r, r, r), 90f * (1 + factor), 180f, false, paint)
     restore()
@@ -120,6 +120,7 @@ class HalfCircleMoveView (ctx : Context) : View(ctx) {
 
         fun draw(canvas : Canvas, paint : Paint) {
             canvas.drawHCNode(i, state.scale, paint)
+            next?.draw(canvas, paint)
         }
 
         fun update(cb : (Int, Float) -> Unit) {
@@ -175,6 +176,7 @@ class HalfCircleMoveView (ctx : Context) : View(ctx) {
 
         fun render(canvas : Canvas, paint : Paint) {
             canvas.drawColor(Color.parseColor("#BDBDBD"))
+            hcm.draw(canvas, paint)
             animator.animate {
                 hcm.update {i, scl ->
                     animator.stop()
